@@ -12,7 +12,7 @@ const client = new ApolloClient({
 
 const GET_POKEMONS = gql`
     query {
-  getPokemons(search: "s") {
+  getPokemons {
     Pokemon
     Type1
     Type2
@@ -22,6 +22,6 @@ const GET_POKEMONS = gql`
 }
 `
 
-client.query({ query: GET_POKEMONS }).then(result => console.log(result))
+client.query({ query: GET_POKEMONS }).then(result => console.log(result.data))
 
 ReactDOM.render(<ApolloProvider client={client}><App /></ApolloProvider>, document.getElementById('root'))

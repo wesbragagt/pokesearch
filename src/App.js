@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { useQuery } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
+import ReactSelect from 'react-select'
+import ImageCard from './ImageCard'
+import './App.css'
+const GET_POKEMONS = gql`
+query {
+  getPokemons {
+    Pokemon
+    Type1
+    Type2
+    GIF
+    Description
+    PNG
+  }
+}
+`
+function App () {
+  const [select, setSelect] = React.useState('')
+  const { loading, error, data } = useQuery(GET_POKEMONS)
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error =(</p>
+  const [pokemons] = Object.values(data)
+  const options = pokemons.map(({ Pokemon, PNG }) => ({
+    value: PNG,
+    label: Pokemon
+  }))
+  const handleSelect = pokemon => setSelect(pokemon.value)
 
-function App() {
+  console.log(options)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className='App'>
+      <header className='App-header'>
+        {select !== '' ? <ImageCard PNG={select} /> : <span>...</span>}
+        <ReactSelect className='react-select' options={options} onChange={handleSelect} />
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
